@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Implementation-Vendor: wcyoung
 Implementation-Title: spring-common
 Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor: wcyoung
