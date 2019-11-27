@@ -1,2 +1,2 @@
-# spring-common
-Spring Project Common Library
+# spring-mvc-common
+Spring MVC Project Common Library
