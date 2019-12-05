@@ -22,6 +22,6 @@ def libVer = [
 ]
 
 dependencies {
-    implementation group: "org.slf4j", name:"slf4j-api", version:"${libVer.slf4j}"
+    implementation group: "org.slf4j", name: "slf4j-api", version: "${libVer.slf4j}"
     implementation group: "org.springframework", name: "spring-webmvc", version: "${libVer.spring}"
 }
