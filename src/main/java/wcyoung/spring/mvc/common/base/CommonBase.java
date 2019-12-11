@@ -1,4 +1,4 @@
-package wcyoung.spring.mvc.common.aop;
+package wcyoung.spring.mvc.common.base;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
