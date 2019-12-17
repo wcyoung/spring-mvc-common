@@ -17,14 +17,14 @@ repositories {
 }
 
 def libVer = [
-    slf4j: '1.7.29',
     mybatis:'3.5.3',
     mybatisSpring: '2.0.3',
-    spring: '4.3.25.RELEASE'
+    spring: '4.3.25.RELEASE',
+    slf4j: '1.7.29',
+    commonsLang: '3.9'
 ]
 
 dependencies {
-    implementation group: "org.slf4j", name: "slf4j-api", version: "${libVer.slf4j}"
     implementation group: "org.mybatis", name: "mybatis", version: "${libVer.mybatis}"
     implementation group: "org.mybatis", name: "mybatis-spring", version: "${libVer.mybatisSpring}"
     implementation group: "org.springframework", name: "spring-aop", version: "${libVer.spring}"
@@ -34,4 +34,7 @@ dependencies {
     implementation group: "org.springframework", name: "spring-expression", version: "${libVer.spring}"
     implementation group: "org.springframework", name: "spring-web", version: "${libVer.spring}"
     implementation group: "org.springframework", name: "spring-webmvc", version: "${libVer.spring}"
+
+    implementation group: "org.apache.commons", name: "commons-lang3", version: "${libVer.commonsLang}"
+    implementation group: "org.slf4j", name: "slf4j-api", version: "${libVer.slf4j}"
 }
