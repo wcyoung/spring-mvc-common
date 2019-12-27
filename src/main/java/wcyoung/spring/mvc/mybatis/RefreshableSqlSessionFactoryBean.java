@@ -136,7 +136,7 @@ public class RefreshableSqlSessionFactoryBean extends SqlSessionFactoryBean impl
                 }
 
                 if (retVal) {
-                    log.info("modified files : {}", modifiedResources);
+                    log.info("modified files: {}", modifiedResources);
                 }
                 return retVal;
             }
