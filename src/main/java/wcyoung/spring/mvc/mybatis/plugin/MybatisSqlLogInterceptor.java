@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -22,6 +23,7 @@ import org.springframework.util.ReflectionUtils;
 
 @Intercepts({
     @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}),
+    @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
     @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})
 })
 public class MybatisSqlLogInterceptor implements Interceptor {
@@ -29,9 +31,9 @@ public class MybatisSqlLogInterceptor implements Interceptor {
     private Logger log = LoggerFactory.getLogger(getClass());
 
     private final String LOG_FORMAT=
-            "\n==========================================================================================\n"
-            + "[SQL_ID] {}\n"
-            + "==========================================================================================\n"
+            "\n======================================= MapperId =========================================\n"
+            + "{}\n"
+            + "========================================== SQL ===========================================\n"
             + "    {}";
 
     @Override
@@ -62,11 +64,7 @@ public class MybatisSqlLogInterceptor implements Interceptor {
                 return;
             }
 
-            if (parameter == null) {
-                sql.replace(questionIndex, questionIndex + 1, "NULL");
-            } else {
-                sql.replace(questionIndex, questionIndex + 1, (parameter != null) ? "'" + parameter.toString() + "'" : "NULL");
-            }
+            sql.replace(questionIndex, questionIndex + 1, (parameter != null) ? "'" + parameter.toString() + "'" : "NULL");
         };
 
         if (parameterObject == null) {
