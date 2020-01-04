@@ -1,4 +1,4 @@
-package wcyoung.spring.mvc.common.property;
+package wcyoung.spring.mvc.common.config;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -8,17 +8,17 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ApplicationProperties {
+public class ConfigurationProperties {
 
     private Logger log = LoggerFactory.getLogger(getClass());
 
     private Properties properties;
 
-    public ApplicationProperties(String defaultFilePath) {
+    public ConfigurationProperties(String defaultFilePath) {
         this("application.configurationFile", defaultFilePath);
     }
 
-    public ApplicationProperties(String argumentKey, String defaultFilePath) {
+    public ConfigurationProperties(String argumentKey, String defaultFilePath) {
         try {
             InputStream inputStream = null;
 

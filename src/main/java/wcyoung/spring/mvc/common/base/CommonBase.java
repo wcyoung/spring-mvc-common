@@ -5,21 +5,21 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import wcyoung.spring.mvc.common.property.ApplicationProperties;
+import wcyoung.spring.mvc.common.config.ConfigurationProperties;
 
 public abstract class CommonBase {
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @Resource
-    private ApplicationProperties applicationProperties;
+    private ConfigurationProperties configurationProperties;
 
     protected String getProperty(String key) {
-        return applicationProperties.getProperty(key);
+        return configurationProperties.getProperty(key);
     }
 
     protected String getProperty(String key, String defaultValue) {
-        return applicationProperties.getProperty(key, defaultValue);
+        return configurationProperties.getProperty(key, defaultValue);
     }
 
 }
