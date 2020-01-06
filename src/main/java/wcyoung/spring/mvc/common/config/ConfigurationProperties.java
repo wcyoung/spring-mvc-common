@@ -23,11 +23,18 @@ public class ConfigurationProperties {
             InputStream inputStream = null;
 
             String argumentFilePath = System.getProperty(argumentKey);
+            String filePath = "";
             if (argumentFilePath != null && argumentFilePath.trim().length() != 0) {
+                filePath = argumentFilePath;
                 inputStream = new FileInputStream(argumentFilePath);
             } else {
+                filePath = defaultFilePath;
                 inputStream = getClass().getClassLoader().getResourceAsStream(defaultFilePath);
             }
+
+            log.info("============================================================");
+            log.info("configuration file: [{}]", filePath);
+            log.info("============================================================");
 
             properties = new Properties();
             properties.load(inputStream);
