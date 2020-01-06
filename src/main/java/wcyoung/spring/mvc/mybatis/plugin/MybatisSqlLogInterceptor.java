@@ -64,7 +64,13 @@ public class MybatisSqlLogInterceptor implements Interceptor {
                 return;
             }
 
-            String parameterString = (parameter != null) ? "'" + parameter.toString().replace("'", "\\'") + "'" : "NULL";
+            String parameterString = "";
+            if (parameter instanceof Integer || parameter instanceof Long
+                    || parameter instanceof Float || parameter instanceof Double) {
+                parameterString = (parameter != null) ? parameter.toString() : "NULL";
+            } else {
+                parameterString = (parameter != null) ? "'" + parameter.toString().replace("'", "\\'") + "'" : "NULL";
+            }
             sql.replace(questionIndex, questionIndex + 1, parameterString);
         };
 
