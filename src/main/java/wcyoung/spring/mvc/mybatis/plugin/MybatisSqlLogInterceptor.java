@@ -68,15 +68,21 @@ public class MybatisSqlLogInterceptor implements Interceptor {
         };
 
         if (parameterObject == null) {
-            sqlObjectReplace.accept(sqlStringBuilder, parameterObject);
+            List<ParameterMapping> paramMappings = boundSql.getParameterMappings();
+            for (int i = 0, length = paramMappings.size(); i < length; i++) {
+                sqlObjectReplace.accept(sqlStringBuilder, parameterObject);
+            }
         } else {
             if (parameterObject instanceof Integer || parameterObject instanceof Long
                     || parameterObject instanceof Float || parameterObject instanceof Double
                     || parameterObject instanceof String) {
-                sqlObjectReplace.accept(sqlStringBuilder, parameterObject);
-            } else if (parameterObject instanceof Map) {
-                Map<?, ?> parameterObjectMap = (Map<?, ?>) parameterObject;
                 List<ParameterMapping> paramMappings = boundSql.getParameterMappings();
+                for (int i = 0, length = paramMappings.size(); i < length; i++) {
+                    sqlObjectReplace.accept(sqlStringBuilder, parameterObject);
+                }
+            } else if (parameterObject instanceof Map) {
+                List<ParameterMapping> paramMappings = boundSql.getParameterMappings();
+                Map<?, ?> parameterObjectMap = (Map<?, ?>) parameterObject;
 
                 for (ParameterMapping parameterMapping : paramMappings) {
                     String propertyKey = parameterMapping.getProperty();
@@ -101,9 +107,13 @@ public class MybatisSqlLogInterceptor implements Interceptor {
                     if (boundSql.hasAdditionalParameter(propertyKey)) {
                         paramValue = boundSql.getAdditionalParameter(propertyKey);
                     } else {
-                        Field field = ReflectionUtils.findField(paramClass, propertyKey);
-                        field.setAccessible(true);
-                        paramValue = field.get(parameterObject);
+                        try {
+                            Field field = ReflectionUtils.findField(paramClass, propertyKey);
+                            field.setAccessible(true);
+                            paramValue = field.get(parameterObject);
+                        } catch (Exception e) {
+                            log.warn("There is no getter for property named '{}' in '{}'", propertyKey, paramClass);
+                        }
                     }
 
                     sqlObjectReplace.accept(sqlStringBuilder, paramValue);
