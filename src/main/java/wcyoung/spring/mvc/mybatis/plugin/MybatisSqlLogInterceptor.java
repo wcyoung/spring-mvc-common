@@ -57,20 +57,21 @@ public class MybatisSqlLogInterceptor implements Interceptor {
     private String getParameterBindingSql(BoundSql boundSql, Object parameterObject) throws Exception {
         StringBuilder sqlStringBuilder = new StringBuilder(boundSql.getSql());
 
-        BiConsumer<StringBuilder, Object> sqlObjectReplace = (sql, parameter) -> {
+        BiConsumer<StringBuilder, Object> sqlParameterReplace = (sql, parameter) -> {
             int questionIndex = sql.indexOf("?");
 
             if (questionIndex == -1) {
                 return;
             }
 
-            sql.replace(questionIndex, questionIndex + 1, (parameter != null) ? "'" + parameter.toString() + "'" : "NULL");
+            String parameterString = (parameter != null) ? "'" + parameter.toString().replace("'", "\\'") + "'" : "NULL";
+            sql.replace(questionIndex, questionIndex + 1, parameterString);
         };
 
         if (parameterObject == null) {
             List<ParameterMapping> paramMappings = boundSql.getParameterMappings();
             for (int i = 0, length = paramMappings.size(); i < length; i++) {
-                sqlObjectReplace.accept(sqlStringBuilder, parameterObject);
+                sqlParameterReplace.accept(sqlStringBuilder, parameterObject);
             }
         } else {
             if (parameterObject instanceof Integer || parameterObject instanceof Long
@@ -78,7 +79,7 @@ public class MybatisSqlLogInterceptor implements Interceptor {
                     || parameterObject instanceof String) {
                 List<ParameterMapping> paramMappings = boundSql.getParameterMappings();
                 for (int i = 0, length = paramMappings.size(); i < length; i++) {
-                    sqlObjectReplace.accept(sqlStringBuilder, parameterObject);
+                    sqlParameterReplace.accept(sqlStringBuilder, parameterObject);
                 }
             } else if (parameterObject instanceof Map) {
                 List<ParameterMapping> paramMappings = boundSql.getParameterMappings();
@@ -94,7 +95,7 @@ public class MybatisSqlLogInterceptor implements Interceptor {
                         paramValue = parameterObjectMap.get(propertyKey);
                     }
 
-                    sqlObjectReplace.accept(sqlStringBuilder, paramValue);
+                    sqlParameterReplace.accept(sqlStringBuilder, paramValue);
                 }
             } else {
                 List<ParameterMapping> paramMappings = boundSql.getParameterMappings();
@@ -116,7 +117,7 @@ public class MybatisSqlLogInterceptor implements Interceptor {
                         }
                     }
 
-                    sqlObjectReplace.accept(sqlStringBuilder, paramValue);
+                    sqlParameterReplace.accept(sqlStringBuilder, paramValue);
                 }
             }
         }
