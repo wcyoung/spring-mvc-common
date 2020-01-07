@@ -43,9 +43,12 @@ public class MybatisSqlLogInterceptor implements Interceptor {
                 Object[] args = invocation.getArgs();
                 MappedStatement mappedStatement = (MappedStatement) args[0];
                 Object parameterObject = (Object) args[1];
-                BoundSql boundSql = mappedStatement.getBoundSql(parameterObject);
 
-                log.debug(LOG_FORMAT, mappedStatement.getId(), getParameterBindingSql(boundSql, parameterObject));
+                Logger mapperLogger = LoggerFactory.getLogger(mappedStatement.getId());
+                if (mapperLogger.isDebugEnabled()) {
+                    BoundSql boundSql = mappedStatement.getBoundSql(parameterObject);
+                    log.debug(LOG_FORMAT, mappedStatement.getId(), getParameterBindingSql(boundSql, parameterObject));
+                }
             }
         } catch (Exception e) {
             log.error("Exception: {}", ExceptionUtils.getStackTrace(e));
