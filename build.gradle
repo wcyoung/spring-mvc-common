@@ -38,3 +38,11 @@ dependencies {
     implementation group: "org.apache.commons", name: "commons-lang3", version: "${libVer.commonsLang}"
     implementation group: "org.slf4j", name: "slf4j-api", version: "${libVer.slf4j}"
 }
+
+jar {
+    manifest {
+        attributes "Implementation-Title": "${rootProject.name}",
+                "Implementation-Version": "${rootProject.version}",
+                "Implementation-Vendor": "${rootProject.group}"
+    }
+}
