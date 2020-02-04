@@ -1,6 +1,7 @@
 package wcyoung.spring.mvc.common.config;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -28,8 +29,12 @@ public class ConfigurationProperties {
                 filePath = argumentFilePath;
                 inputStream = new FileInputStream(argumentFilePath);
             } else {
-                filePath = defaultFilePath;
+                filePath = "classpath:" + defaultFilePath;
                 inputStream = getClass().getClassLoader().getResourceAsStream(defaultFilePath);
+            }
+
+            if (inputStream == null) {
+                throw new FileNotFoundException("'" + filePath + "' is not found.");
             }
 
             log.info("============================================================");
