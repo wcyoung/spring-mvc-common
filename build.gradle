@@ -17,6 +17,7 @@ repositories {
 }
 
 def libVer = [
+    servletApi: '3.1.0',
     mybatis:'3.5.3',
     mybatisSpring: '2.0.3',
     spring: '4.3.25.RELEASE',
@@ -25,6 +26,7 @@ def libVer = [
 ]
 
 dependencies {
+    implementation group: "javax.servlet", name: "javax.servlet-api", version: "${libVer.servletApi}"
     implementation group: "org.mybatis", name: "mybatis", version: "${libVer.mybatis}"
     implementation group: "org.mybatis", name: "mybatis-spring", version: "${libVer.mybatisSpring}"
     implementation group: "org.springframework", name: "spring-aop", version: "${libVer.spring}"
