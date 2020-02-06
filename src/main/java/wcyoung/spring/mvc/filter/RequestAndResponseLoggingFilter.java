@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -44,12 +45,20 @@ public class RequestAndResponseLoggingFilter extends OncePerRequestFilter {
     }
 
     protected void doFilterWrapped(ContentCachingRequestWrapper request, ContentCachingResponseWrapper response, FilterChain filterChain) throws IOException, ServletException {
+        StopWatch stopWatch = new StopWatch();
+
         try {
+            stopWatch.start();
+
             beforeRequest(request, response);
             filterChain.doFilter(request, response);
         } finally {
             afterRequest(request, response);
             response.copyBodyToResponse();
+
+            stopWatch.stop();
+            long executionTime = stopWatch.getTime();
+            log.debug("{} <==> execution time=({} ms)", request.getRemoteAddr(), String.format("%,d", executionTime));
         }
     }
 
