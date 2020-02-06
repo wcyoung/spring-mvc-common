@@ -58,7 +58,7 @@ public class RequestAndResponseLoggingFilter extends OncePerRequestFilter {
 
             stopWatch.stop();
             long executionTime = stopWatch.getTime();
-            log.debug("{} <==> execution time=({} ms)", request.getRemoteAddr(), String.format("%,d", executionTime));
+            log.debug("[{}] <==> execution time=({} ms)", request.getRemoteAddr(), String.format("%,d", executionTime));
         }
     }
 
@@ -76,14 +76,14 @@ public class RequestAndResponseLoggingFilter extends OncePerRequestFilter {
     private void logRequestHeader(ContentCachingRequestWrapper request, String remoteAddr) {
         String queryString = request.getQueryString();
         if (queryString == null) {
-            log.debug("{} ==> [{}] {}", remoteAddr, request.getMethod(), request.getRequestURI());
+            log.debug("[{}] ==> [{}] {}", remoteAddr, request.getMethod(), request.getRequestURI());
         } else {
-            log.debug("{} ==> [{}] {}?{}", remoteAddr, request.getMethod(), request.getRequestURI(), queryString);
+            log.debug("[{}] ==> [{}] {}?{}", remoteAddr, request.getMethod(), request.getRequestURI(), queryString);
         }
 
         Collections.list(request.getHeaderNames()).forEach(headerName -> {
             Collections.list(request.getHeaders(headerName)).forEach(headerValue -> {
-                log.debug("{} ==> {}: {}", remoteAddr, headerName, headerValue);
+                log.debug("[{}] ==> {}: {}", remoteAddr, headerName, headerValue);
             });
         });
     }
@@ -91,17 +91,17 @@ public class RequestAndResponseLoggingFilter extends OncePerRequestFilter {
     private void logRequestBody(ContentCachingRequestWrapper request, String remoteAddr) {
         byte[] content = request.getContentAsByteArray();
         if (content.length > 0) {
-            logContent(content, request.getContentType(), request.getCharacterEncoding(), remoteAddr + " ==>");
+            logContent(content, request.getContentType(), request.getCharacterEncoding(), "[" + remoteAddr + "] ==>");
         }
     }
 
     private void logResponseHeader(ContentCachingResponseWrapper response, String remoteAddr) {
         int status = response.getStatusCode();
-        log.debug("{} <== [{} {}]", remoteAddr, status, HttpStatus.valueOf(status).getReasonPhrase());
+        log.debug("[{}] <== [{} {}]", remoteAddr, status, HttpStatus.valueOf(status).getReasonPhrase());
 
         response.getHeaderNames().forEach(headerName -> {
             response.getHeaders(headerName).forEach(headerValue -> {
-                log.debug("{} <== {}: {}", headerName, headerValue);
+                log.debug("[{}] <== {}: {}", headerName, headerValue);
             });
         });
     }
@@ -109,7 +109,7 @@ public class RequestAndResponseLoggingFilter extends OncePerRequestFilter {
     private void logResponseBody(ContentCachingResponseWrapper response, String remoteAddr) {
         byte[] content = response.getContentAsByteArray();
         if (content.length > 0) {
-            logContent(content, response.getContentType(), response.getCharacterEncoding(), remoteAddr + " <==");
+            logContent(content, response.getContentType(), response.getCharacterEncoding(), "[" + remoteAddr + "] <==");
         }
     }
 
