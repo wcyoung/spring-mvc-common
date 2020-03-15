@@ -57,7 +57,7 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
             return body;
         }
 
-        String[] ignoreKeys = new String[] {};
+        String[] ignoreKeys = {};
 
         ApplyXssFilter applyXssFilter = returnType.getMethodAnnotation(ApplyXssFilter.class);
         if (applyXssFilter != null) {
