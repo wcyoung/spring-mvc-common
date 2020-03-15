@@ -32,14 +32,17 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         if (returnType.hasMethodAnnotation(IgnoreXssFilter.class)) {
+            log.debug("{} - @IgnoreXssFilter has been applied.", returnType.getMethod());
             return false;
         }
 
         if (returnType.getContainingClass().isAnnotationPresent(IgnoreXssFilter.class)
                 && !returnType.hasMethodAnnotation(ApplyXssFilter.class)) {
+            log.debug("{} - @IgnoreXssFilter has been applied.", returnType.getContainingClass());
             return false;
         }
 
+        log.trace("{} is filtered.", returnType.getMethod());
         return true;
     }
 
@@ -50,6 +53,7 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
             ServerHttpRequest request, ServerHttpResponse response) {
 
         if (!supportsMediaType(selectedContentType)) {
+            log.debug("{} type is not supported.", selectedContentType);
             return body;
         }
 
@@ -69,6 +73,9 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
         }
 
         if (body instanceof Map) {
+            if (ignoreKeys.length > 0) {
+                log.debug("{} - ignoreKeys{} has been applied.", returnType.getMethod(), ignoreKeys);
+            }
             return filter((Map<String, Object>) body, ignoreKeys);
         }
 
