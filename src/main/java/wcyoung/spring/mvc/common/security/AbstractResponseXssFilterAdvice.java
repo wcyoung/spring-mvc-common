@@ -53,7 +53,7 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
             ServerHttpRequest request, ServerHttpResponse response) {
 
         if (!supportsMediaType(selectedContentType)) {
-            log.debug("{} type is not supported.", selectedContentType);
+            log.debug("[{}] type is not supported.", selectedContentType);
             return body;
         }
 
