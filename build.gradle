@@ -10,7 +10,7 @@ compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 
 group = 'wcyoung'
-version = '0.0.1.SNAPSHOT'
+version = '0.9.0.SNAPSHOT'
 
 repositories {
     jcenter()
