@@ -42,7 +42,6 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
             return false;
         }
 
-        log.trace("{} is filtered.", returnType.getMethod());
         return true;
     }
 
@@ -69,6 +68,7 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
                 throw new IllegalArgumentException(returnType.getMethod()
                         + " - @ApplyXssFilter.ignoreKeys only applies when response body type is Map.");
             }
+            log.trace("{} is filtered.", returnType.getMethod());
             return filter((String) body);
         }
 
@@ -76,6 +76,7 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
             if (ignoreKeys.length > 0) {
                 log.debug("{} - ignoreKeys{} has been applied.", returnType.getMethod(), ignoreKeys);
             }
+            log.trace("{} is filtered.", returnType.getMethod());
             return filter((Map<String, Object>) body, ignoreKeys);
         }
 
@@ -84,6 +85,7 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
                 throw new IllegalArgumentException(returnType.getMethod()
                         + " - @ApplyXssFilter.ignoreKeys only applies when response body type is Map.");
             }
+            log.trace("{} is filtered.", returnType.getMethod());
             return filter((List<Object>) body, ignoreKeys);
         }
 
@@ -91,6 +93,7 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
             throw new IllegalArgumentException(returnType.getMethod()
                     + " - @ApplyXssFilter.ignoreKeys only applies when response body type is Map.");
         }
+        log.trace("{} is filtered.", returnType.getMethod());
         return filter(body, ignoreKeys);
     }
 
