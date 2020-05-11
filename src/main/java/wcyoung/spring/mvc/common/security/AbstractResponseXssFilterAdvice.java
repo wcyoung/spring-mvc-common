@@ -86,7 +86,7 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
                         + " - @ApplyXssFilter.ignoreKeys only applies when response body type is Map.");
             }
             log.trace("{} is filtered.", returnType.getMethod());
-            return filter((List<Object>) body, ignoreKeys);
+            return filter((List<Object>) body);
         }
 
         if (ignoreKeys.length > 0) {
@@ -94,7 +94,7 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
                     + " - @ApplyXssFilter.ignoreKeys only applies when response body type is Map.");
         }
         log.trace("{} is filtered.", returnType.getMethod());
-        return filter(body, ignoreKeys);
+        return filter(body);
     }
 
     protected String filter(String value) {
@@ -105,6 +105,30 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
         value = value.replace("<", "&lt;").replace(">", "&gt;");
         value = value.replace("'", "&#39;").replace("\"", "&quot;");
         return value;
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> filter(Map<String, Object> map) {
+        if (map == null) {
+            return map;
+        }
+
+        for (Entry<String, Object> entry : map.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+
+            if (value instanceof String) {
+                map.put(key, filter((String) value));
+            } else if (value instanceof Map) {
+                map.put(key, filter((Map<String, Object>) value));
+            } else if (value instanceof List) {
+                map.put(key, filter((List<Object>) value));
+            } else {
+                map.put(key, filter(value));
+            }
+        }
+
+        return map;
     }
 
     @SuppressWarnings("unchecked")
@@ -124,11 +148,11 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
             if (value instanceof String) {
                 map.put(key, filter((String) value));
             } else if (value instanceof Map) {
-                map.put(key, filter((Map<String, Object>) value, ignoreKeys));
+                map.put(key, filter((Map<String, Object>) value));
             } else if (value instanceof List) {
-                map.put(key, filter((List<Object>) value, ignoreKeys));
+                map.put(key, filter((List<Object>) value));
             } else {
-                map.put(key, filter(value, ignoreKeys));
+                map.put(key, filter(value));
             }
         }
 
@@ -136,7 +160,7 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
     }
 
     @SuppressWarnings("unchecked")
-    private List<Object> filter(List<Object> list, String[] ignoreKeys) {
+    private List<Object> filter(List<Object> list) {
         if (list == null) {
             return list;
         }
@@ -147,11 +171,11 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
             if (value instanceof String) {
                 list.set(i, filter((String) value));
             } else if (value instanceof Map) {
-                list.set(i, filter((Map<String, Object>) value, ignoreKeys));
+                list.set(i, filter((Map<String, Object>) value));
             } else if (value instanceof List) {
-                list.set(i, filter((List<Object>) value, ignoreKeys));
+                list.set(i, filter((List<Object>) value));
             } else {
-                list.set(length, filter(value, ignoreKeys));
+                list.set(i, filter(value));
             }
         }
 
@@ -159,7 +183,7 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
     }
 
     @SuppressWarnings("unchecked")
-    private Object filter(Object object, String[] ignoreKeys) {
+    private Object filter(Object object) {
         if (object == null) {
             return object;
         }
@@ -185,13 +209,13 @@ public abstract class AbstractResponseXssFilterAdvice implements ResponseBodyAdv
                     FieldUtils.writeField(field, object, filter(value));
                 } else if (field.getType().equals(Map.class)) {
                     Map<String, Object> value = (Map<String, Object>) FieldUtils.readField(field, object, true);
-                    FieldUtils.writeField(field, object, filter(value, ignoreKeys));
+                    FieldUtils.writeField(field, object, filter(value));
                 } else if (field.getType().equals(List.class)) {
                     List<Object> value = (List<Object>) FieldUtils.readField(field, object, true);
-                    FieldUtils.writeField(field, object, filter(value, ignoreKeys));
+                    FieldUtils.writeField(field, object, filter(value));
                 } else {
                     Object value = FieldUtils.readField(field, object, true);
-                    FieldUtils.writeField(field, object, filter(value, ignoreKeys));
+                    FieldUtils.writeField(field, object, filter(value));
                 }
             } catch (Exception e) {
                 log.error("Exception: {}", ExceptionUtils.getStackTrace(e));
