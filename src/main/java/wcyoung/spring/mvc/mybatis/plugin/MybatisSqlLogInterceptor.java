@@ -3,6 +3,7 @@ package wcyoung.spring.mvc.mybatis.plugin;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.function.BiConsumer;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -131,7 +132,18 @@ public class MybatisSqlLogInterceptor implements Interceptor {
             }
         }
 
-        return sqlStringBuilder.toString();
+        StringTokenizer stringTokenizer = new StringTokenizer(sqlStringBuilder.toString(), "\n");
+        StringBuilder trimedSqlStringBuilder = new StringBuilder();
+        String line;
+
+        while (stringTokenizer.hasMoreTokens()) {
+            line = stringTokenizer.nextToken();
+            if (!line.trim().equals("")) {
+                trimedSqlStringBuilder.append(line).append("\n");
+            }
+        }
+
+        return trimedSqlStringBuilder.toString();
     }
 
 }
